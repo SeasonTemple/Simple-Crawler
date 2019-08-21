@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       default-lazy-init="true"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="com.seasontemple.top"/>
+	<context:annotation-config />
+	<context:property-placeholder location="classpath:mysql.properties"/>
+
+	<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource"
+	      destroy-method="close">
+		<property name="url" value="${url}"/>
+		<property name="driverClassName" value="${driverClassName}"/>
+		<property name="username" value="${users}"/>
+		<property name="password" value="${pwd}"/>
+		<property name="maxActive" value="${maxActive}"/>
+		<property name="minIdle" value="${minIdle}"/>
+		<property name="initialSize" value="${initialSize}"/>
+		<property name="maxWait" value="${maxWait}"/>
+	</bean>
+
+	<!--mybatis集成配置-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds"/>
+		<!-- 给文件取别名 -->
+		<property name="typeAliasesPackage" value="com.seasontemple.top.model"/>
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true" />
+				<property name="logImpl"
+				          value="org.apache.ibatis.logging.slf4j.Slf4jImpl" />
+			</bean>
+		</property>
+	</bean>
+
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.seasontemple.top.dao"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
+	<!--事务相关配置-->
+	<bean id="transactionManager"
+	      class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ds" />
+	</bean>
+
+	<!-- 声明式事务管理 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
