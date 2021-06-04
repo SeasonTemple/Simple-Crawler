@@ -31,7 +31,7 @@
     <aopalliance.version>1.0</aopalliance.version>
     <log4j2.version>2.9.1</log4j2.version>
     <slf4j.version>1.7.25</slf4j.version>
-    <httpclient.version>4.5.2</httpclient.version>
+    <httpclient.version>4.5.13</httpclient.version>
     <jsoup.version>1.12.1</jsoup.version>
   </properties>
 
